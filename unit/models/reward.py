@@ -1,25 +1,54 @@
 import json
 from typing import Optional, Literal, Dict, List
 from datetime import datetime
-
 from unit.models import Relationship, UnitRequest, UnitParams
-
+from unit.utils import (
+    create_relationship,
+    create_deposit_account_relationship,
+    date_utils,
+)
 
 SORT_ORDERS = Literal["created_at", "-created_at"]
 RELATED_RESOURCES = Literal["customer", "account", "transaction"]
+RewardStatus = Literal["Sent", "Rejected"]
 
 
 class RewardDTO(object):
-    def __init__(self, id: str, amount: int, description: str, status: str, tags: Optional[Dict[str, str]] = None,
-                 relationships: Optional[Dict[str, Relationship]] = None):
-        self.id = id
+    def __init__(
+        self,
+        _id: str,
+        created_at: datetime,
+        amount: int,
+        description: str,
+        status: RewardStatus,
+        reject_reason: Optional[str],
+        tags: Optional[Dict[str, str]] = None,
+        relationships: Optional[Dict[str, Relationship]] = None,
+    ):
+        self.id = _id
         self.type = "reward"
-        self.attributes = {"amount": amount, "description": description, "status": status, "tags": tags}
+        self.attributes = {
+            "createdAt": created_at,
+            "amount": amount,
+            "description": description,
+            "status": status,
+            "rejectReason": reject_reason,
+            "tags": tags,
+        }
         self.relationships = relationships
 
     @staticmethod
     def from_json_api(_id, attributes, relationships):
-        return RewardDTO(_id, attributes["amount"], attributes["description"], attributes["status"], attributes.get("tags"), relationships)
+        return RewardDTO(
+            _id,
+            date_utils.to_datetime(attributes["createdAt"]),
+            attributes["amount"],
+            attributes["description"],
+            attributes["status"],
+            attributes.get("rejectReason"),
+            attributes.get("tags"),
+            relationships,
+        )
 
 
 class CreateRewardRequest(UnitRequest):
@@ -31,7 +60,7 @@ class CreateRewardRequest(UnitRequest):
         rewarded_transaction_id: Optional[str] = None,
         funding_account_id: Optional[str] = None,
         idempotency_key: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None
+        tags: Optional[Dict[str, str]] = None,
     ):
         self.type = "reward"
         self.amount = amount
@@ -41,25 +70,35 @@ class CreateRewardRequest(UnitRequest):
         self.funding_account_id = funding_account_id
         self.idempotency_key = idempotency_key
         self.tags = tags
+        self.relationships = {}
 
-        self.relationships = {
-            "receivingAccount": Relationship(_type="depositAccount", _id=self.receiving_account_id)
-        }
+        if self.receiving_account_id:
+            self.relationships.update(
+                create_deposit_account_relationship(
+                    self.receiving_account_id, "receivingAccount"
+                )
+            )
+
         if self.rewarded_transaction_id:
-            self.relationships["rewardedTransaction"] = Relationship(_type="transaction", _id=self.rewarded_transaction_id)
+            self.relationships.update(
+                create_relationship(
+                    "transaction", self.rewarded_transaction_id, "rewardedTransaction"
+                )
+            )
 
         if self.funding_account_id:
-            self.relationships["fundingAccount"] = Relationship(_type="depositAccount", _id=self.funding_account_id)
+            self.relationships.update(
+                create_deposit_account_relationship(
+                    self.receiving_account_id, "fundingAccount"
+                )
+            )
 
     def to_json_api(self) -> Dict:
         payload = {
             "data": {
                 "type": self.type,
-                "attributes": {
-                    "amount": self.amount,
-                    "description": self.description
-                },
-                "relationships": self.relationships
+                "attributes": {"amount": self.amount, "description": self.description},
+                "relationships": self.relationships,
             }
         }
 
@@ -90,6 +129,7 @@ class ListRewardsParams(UnitParams):
         until: Optional[datetime] = None,
         sort: Optional[SORT_ORDERS] = None,
         include: Optional[List[RELATED_RESOURCES]] = None,
+        tags: Optional[object] = None,
     ):
         self.limit = limit
         self.offset = offset
@@ -103,6 +143,7 @@ class ListRewardsParams(UnitParams):
         self.until = until
         self.sort = sort
         self.include = include
+        self.tags = tags
 
     def to_dict(self) -> Dict:
         parameters = {"page[limit]": self.limit, "page[offset]": self.offset}
@@ -128,10 +169,13 @@ class ListRewardsParams(UnitParams):
         if self.since:
             parameters["filter[since]"] = self.since
 
-        if self.unitl:
+        if self.until:
             parameters["filter[until]"] = self.until
 
         if self.sort:
             parameters["sort"] = self.sort
+
+        if self.tags:
+            parameters["filter[tags]"] = self.tags
 
         return parameters

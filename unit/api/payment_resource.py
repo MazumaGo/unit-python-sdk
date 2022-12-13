@@ -4,13 +4,13 @@ from unit.models.codecs import DtoDecoder, split_json_api_single_response
 
 
 class PaymentResource(BaseResource):
-    def __init__(self, api_url, token):
-        super().__init__(api_url, token)
+    def __init__(self, api_url, token, retries):
+        super().__init__(api_url, token, retries)
         self.resource = "payments"
 
     def create(self, request: CreatePaymentRequest) -> Union[UnitResponse[PaymentDTO], UnitError]:
         payload = request.to_json_api()
-        response = super().post(self.resource, payload)
+        response = super().post_create(self.resource, payload)
         if super().is_20x(response.status_code):
             data = response.json().get("data")
             return UnitResponse[PaymentDTO](DtoDecoder.decode(data), None)
@@ -31,7 +31,7 @@ class PaymentResource(BaseResource):
         if response.status_code == 200:
             data = response.json().get("data")
             included = response.json().get("included")
-            return UnitResponse[PaymentDTO](DtoDecoder.decode(data), DtoDecoder.decode(data))
+            return UnitResponse[PaymentDTO](DtoDecoder.decode(data), DtoDecoder.decode(included))
         else:
             return UnitError.from_json_api(response.json())
 
@@ -41,7 +41,7 @@ class PaymentResource(BaseResource):
         if response.status_code == 200:
             data = response.json().get("data")
             included = response.json().get("included")
-            return UnitResponse[PaymentDTO](DtoDecoder.decode(data), DtoDecoder.decode(data))
+            return UnitResponse[PaymentDTO](DtoDecoder.decode(data), DtoDecoder.decode(included))
         else:
             return UnitError.from_json_api(response.json())
 

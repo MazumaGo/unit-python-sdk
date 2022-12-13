@@ -1,59 +1,152 @@
 from unit.utils import date_utils
 from unit.models import *
 
+ArchiveReason = Literal[
+    "Inactive",
+    "FraudACHActivity",
+    "FraudCardActivity",
+    "FraudCheckActivity",
+    "FraudApplicationHistory",
+    "FraudAccountActivity",
+    "FraudClientIdentified",
+]
+
+CustomerStatus = Literal["Active", "Archived"]
+
 
 class IndividualCustomerDTO(object):
-    def __init__(self, id: str, created_at: datetime, full_name: FullName, date_of_birth: date, address: Address,
-                 phone: Phone, email: str, ssn: Optional[str], passport: Optional[str], nationality: Optional[str],
-                 authorized_users: [AuthorizedUser], tags: Optional[Dict[str, str]],
-                 relationships: Optional[Dict[str, Relationship]]):
+    def __init__(
+        self,
+        id: str,
+        created_at: datetime,
+        full_name: FullName,
+        date_of_birth: date,
+        address: Address,
+        phone: Phone,
+        email: str,
+        ssn: Optional[str],
+        passport: Optional[str],
+        nationality: Optional[str],
+        tags: Optional[Dict[str, str]],
+        relationships: Optional[Dict[str, Relationship]],
+        authorized_users: Optional[List[AuthorizedUser]],
+        status: CustomerStatus,
+        archive_reason: Optional[ArchiveReason],
+    ):
         self.id = id
-        self.type = 'individualCustomer'
-        self.attributes = {"createdAt": created_at, "fullName": full_name, "dateOfBirth": date_of_birth,
-                           "address": address, "phone": phone, "email": email, "ssn": ssn, "passport": passport,
-                           "nationality": nationality, "authorizedUsers": authorized_users, "tags": tags}
+        self.type = "individualCustomer"
+        self.attributes = {
+            "createdAt": created_at,
+            "fullName": full_name,
+            "dateOfBirth": date_of_birth,
+            "address": address,
+            "phone": phone,
+            "email": email,
+            "ssn": ssn,
+            "passport": passport,
+            "status": status,
+            "archiveReason": archive_reason,
+            "nationality": nationality,
+            "authorizedUsers": authorized_users,
+            "tags": tags,
+        }
         self.relationships = relationships
 
     @staticmethod
     def from_json_api(_id, _type, attributes, relationships):
         return IndividualCustomerDTO(
-            _id, date_utils.to_datetime(attributes["createdAt"]),
-            FullName.from_json_api(attributes["fullName"]), date_utils.to_date(attributes["dateOfBirth"]),
-            Address.from_json_api(attributes["address"]), Phone.from_json_api(attributes["phone"]),
-            attributes["email"], attributes.get("ssn"), attributes.get("passport"), attributes.get("nationality"),
-            AuthorizedUser.from_json_api(attributes["authorizedUsers"]), attributes.get("tags"), relationships
+            _id,
+            date_utils.to_datetime(attributes["createdAt"]),
+            FullName.from_json_api(attributes["fullName"]),
+            date_utils.to_date(attributes["dateOfBirth"]),
+            Address.from_json_api(attributes["address"]),
+            Phone.from_json_api(attributes["phone"]),
+            attributes["email"],
+            attributes.get("ssn"),
+            attributes.get("passport"),
+            attributes.get("nationality"),
+            attributes.get("tags"),
+            relationships,
+            AuthorizedUser.from_json_api(attributes.get("authorizedUsers")),
+            attributes.get("status"),
+            attributes.get("archiveReason"),
         )
 
 
 class BusinessCustomerDTO(object):
-    def __init__(self, id: str, created_at: datetime, name: str, address: Address, phone: Phone,
-                 state_of_incorporation: str, ein: str, entity_type: EntityType, contact: BusinessContact,
-                 authorized_users: [AuthorizedUser], dba: Optional[str], tags: Optional[Dict[str, str]],
-                 relationships: Optional[Dict[str, Relationship]]):
+    def __init__(
+        self,
+        id: str,
+        created_at: datetime,
+        name: str,
+        address: Address,
+        phone: Phone,
+        state_of_incorporation: str,
+        ein: str,
+        entity_type: EntityType,
+        contact: BusinessContact,
+        authorized_users: Optional[List[AuthorizedUser]],
+        dba: Optional[str],
+        tags: Optional[Dict[str, str]],
+        relationships: Optional[Dict[str, Relationship]],
+        status: CustomerStatus,
+        archive_reason: Optional[ArchiveReason],
+    ):
         self.id = id
-        self.type = 'businessCustomer'
-        self.attributes = {"createdAt": created_at, "name": name, "address": address, "phone": phone,
-                           "stateOfIncorporation": state_of_incorporation, "ein": ein, "entityType": entity_type,
-                           "contact": contact, "authorizedUsers": authorized_users, "dba": dba, "tags": tags}
+        self.type = "businessCustomer"
+        self.attributes = {
+            "createdAt": created_at,
+            "name": name,
+            "address": address,
+            "phone": phone,
+            "stateOfIncorporation": state_of_incorporation,
+            "ein": ein,
+            "entityType": entity_type,
+            "contact": contact,
+            "authorizedUsers": authorized_users,
+            "dba": dba,
+            "tags": tags,
+            "status": status,
+            "archiveReason": archive_reason,
+        }
         self.relationships = relationships
 
     @staticmethod
     def from_json_api(_id, _type, attributes, relationships):
         return BusinessCustomerDTO(
-            _id, date_utils.to_datetime(attributes["createdAt"]), attributes["name"],
-            Address.from_json_api(attributes["address"]), Phone.from_json_api(attributes["phone"]),
-            attributes["stateOfIncorporation"], attributes["ein"], attributes["entityType"],
+            _id,
+            date_utils.to_datetime(attributes["createdAt"]),
+            attributes["name"],
+            Address.from_json_api(attributes["address"]),
+            Phone.from_json_api(attributes["phone"]),
+            attributes["stateOfIncorporation"],
+            attributes["ein"],
+            attributes["entityType"],
             BusinessContact.from_json_api(attributes["contact"]),
-            AuthorizedUser.from_json_api(attributes["authorizedUsers"]),
-            attributes.get("dba"), attributes.get("tags"), relationships)
+            AuthorizedUser.from_json_api(attributes.get("authorizedUsers")),
+            attributes.get("dba"),
+            attributes.get("tags"),
+            relationships,
+            attributes.get("status"),
+            attributes.get("archiveReason"),
+        )
+
 
 CustomerDTO = Union[IndividualCustomerDTO, BusinessCustomerDTO]
 
 
 class PatchIndividualCustomerRequest(UnitRequest):
-    def __init__(self, customer_id: str, address: Optional[Address] = None, phone: Optional[Phone] = None,
-                 email: Optional[str] = None, dba: Optional[str] = None,
-                 authorized_users: Optional[List[AuthorizedUser]] = None, tags: Optional[Dict[str, str]] = None):
+    def __init__(
+        self,
+        customer_id: str,
+        address: Optional[Address] = None,
+        phone: Optional[Phone] = None,
+        email: Optional[str] = None,
+        dba: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
+        jwt_subject: Optional[str] = None,
+        authorized_users: Optional[AuthorizedUser] = None,
+    ):
         self.customer_id = customer_id
         self.address = address
         self.phone = phone
@@ -61,14 +154,11 @@ class PatchIndividualCustomerRequest(UnitRequest):
         self.dba = dba
         self.authorized_users = authorized_users
         self.tags = tags
+        self.jwt_subject = jwt_subject
+        self.authorized_users = authorized_users
 
     def to_json_api(self) -> Dict:
-        payload = {
-            "data": {
-                "type": "individualCustomer",
-                "attributes": {}
-            }
-        }
+        payload = {"data": {"type": "individualCustomer", "attributes": {}}}
 
         if self.address:
             payload["data"]["attributes"]["address"] = self.address
@@ -88,6 +178,12 @@ class PatchIndividualCustomerRequest(UnitRequest):
         if self.tags:
             payload["data"]["attributes"]["tags"] = self.tags
 
+        if self.jwt_subject:
+            payload["data"]["attributes"]["jwtSubject"] = self.jwt_subject
+
+        if self.authorized_users:
+            payload["data"]["attributes"]["authorizedUsers"] = self.authorized_users
+
         return payload
 
     def __repr__(self):
@@ -95,9 +191,15 @@ class PatchIndividualCustomerRequest(UnitRequest):
 
 
 class PatchBusinessCustomerRequest(UnitRequest):
-    def __init__(self, customer_id: str, address: Optional[Address] = None, phone: Optional[Phone] = None,
-                 contact: Optional[BusinessContact] = None, authorized_users: Optional[List[AuthorizedUser]] = None,
-                 tags: Optional[Dict[str, str]] = None):
+    def __init__(
+        self,
+        customer_id: str,
+        address: Optional[Address] = None,
+        phone: Optional[Phone] = None,
+        contact: Optional[BusinessContact] = None,
+        authorized_users: Optional[List[AuthorizedUser]] = None,
+        tags: Optional[Dict[str, str]] = None,
+    ):
         self.customer_id = customer_id
         self.address = address
         self.phone = phone
@@ -106,12 +208,7 @@ class PatchBusinessCustomerRequest(UnitRequest):
         self.tags = tags
 
     def to_json_api(self) -> Dict:
-        payload = {
-            "data": {
-                "type": "businessCustomer",
-                "attributes": {}
-            }
-        }
+        payload = {"data": {"type": "businessCustomer", "attributes": {}}}
 
         if self.address:
             payload["data"]["attributes"]["address"] = self.address
@@ -134,9 +231,21 @@ class PatchBusinessCustomerRequest(UnitRequest):
         json.dumps(self.to_json_api())
 
 
+PatchCustomerRequest = Union[
+    PatchIndividualCustomerRequest, PatchBusinessCustomerRequest
+]
+
+
 class ListCustomerParams(UnitParams):
-    def __init__(self, offset: int = 0, limit: int = 100, query: Optional[str] = None, email: Optional[str] = None,
-                 tags: Optional[object] = None, sort: Optional[Literal["createdAt", "-createdAt"]] = None):
+    def __init__(
+        self,
+        offset: int = 0,
+        limit: int = 100,
+        query: Optional[str] = None,
+        email: Optional[str] = None,
+        tags: Optional[object] = None,
+        sort: Optional[Literal["createdAt", "-createdAt"]] = None,
+    ):
         self.offset = offset
         self.limit = limit
         self.query = query
@@ -156,3 +265,57 @@ class ListCustomerParams(UnitParams):
             parameters["sort"] = self.sort
         return parameters
 
+
+class ArchiveCustomerRequest(UnitRequest):
+    def __init__(self, customer_id: str, reason: Optional[ArchiveReason] = None):
+        self.customer_id = customer_id
+        self.reason = reason
+
+    def to_json_api(self) -> Dict:
+        payload = {"data": {"type": "archiveCustomer", "attributes": {}}}
+
+        if self.reason:
+            payload["data"]["attributes"]["reason"] = self.reason
+
+        return payload
+
+    def __repr__(self):
+        json.dumps(self.to_json_api())
+
+
+class AddAuthorizedUsersRequest(UnitRequest):
+    def __init__(self, customer_id: str, authorized_users: List[AuthorizedUser]):
+        self.customer_id = customer_id
+        self.authorized_users = authorized_users
+
+    def to_json_api(self) -> Dict:
+        payload = {
+            "data": {
+                "type": "addAuthorizedUsers",
+                "attributes": {"authorizedUsers": self.authorized_users},
+            }
+        }
+
+        return payload
+
+    def __repr__(self):
+        json.dumps(self.to_json_api())
+
+
+class RemoveAuthorizedUsersRequest(UnitRequest):
+    def __init__(self, customer_id: str, authorized_users_emails: List[str]):
+        self.customer_id = customer_id
+        self.authorized_users_emails = authorized_users_emails
+
+    def to_json_api(self) -> Dict:
+        payload = {
+            "data": {
+                "type": "removeAuthorizedUsers",
+                "attributes": {"authorizedUsersEmails": self.authorized_users_emails},
+            }
+        }
+
+        return payload
+
+    def __repr__(self):
+        json.dumps(self.to_json_api())

@@ -2,14 +2,15 @@ from unit.api.base_resource import BaseResource
 from unit.models.account import *
 from unit.models.codecs import DtoDecoder
 
+
 class AccountResource(BaseResource):
-    def __init__(self, api_url, token):
-        super().__init__(api_url, token)
+    def __init__(self, api_url, token, retries):
+        super().__init__(api_url, token, retries)
         self.resource = "accounts"
 
-    def create(self, request: CreateDepositAccountRequest) -> Union[UnitResponse[AccountDTO], UnitError]:
+    def create(self, request: CreateAccountRequest) -> Union[UnitResponse[AccountDTO], UnitError]:
         payload = request.to_json_api()
-        response = super().post(self.resource, payload)
+        response = super().post_create(self.resource, payload)
         if super().is_20x(response.status_code):
             data = response.json().get("data")
             return UnitResponse[AccountDTO](DtoDecoder.decode(data), None)
@@ -33,6 +34,23 @@ class AccountResource(BaseResource):
         else:
             return UnitError.from_json_api(response.json())
 
+    def enter_daca(self, account_id: str) -> Union[UnitResponse[AccountDTO], UnitError]:
+        response = super().post(f"{self.resource}/{account_id}/enter-daca")
+        if super().is_20x(response.status_code):
+            data = response.json().get("data")
+            return UnitResponse[AccountDTO](DtoDecoder.decode(data), None)
+        else:
+            return UnitError.from_json_api(response.json())
+
+    def activate_daca(self, account_id: str) -> Union[UnitResponse[AccountDTO], UnitError]:
+        response = super().post(f"{self.resource}/{account_id}/activate-daca")
+        if super().is_20x(response.status_code):
+            data = response.json().get("data")
+            return UnitResponse[AccountDTO](DtoDecoder.decode(data), None)
+        else:
+            return UnitError.from_json_api(response.json())
+
+
     def get(self, account_id: str, include: Optional[str] = "") -> Union[UnitResponse[AccountDTO], UnitError]:
         response = super().get(f"{self.resource}/{account_id}", {"include": include})
         if super().is_20x(response.status_code):
@@ -52,7 +70,7 @@ class AccountResource(BaseResource):
         else:
             return UnitError.from_json_api(response.json())
 
-    def update(self, request: PatchDepositAccountRequest) -> Union[UnitResponse[AccountDTO], UnitError]:
+    def update(self, request: PatchAccountRequest) -> Union[UnitResponse[AccountDTO], UnitError]:
         payload = request.to_json_api()
         response = super().patch(f"{self.resource}/{request.account_id}", payload)
         if super().is_20x(response.status_code):
@@ -68,4 +86,31 @@ class AccountResource(BaseResource):
             return UnitResponse[AccountLimitsDTO](DtoDecoder.decode(data), None)
         else:
             return UnitError.from_json_api(response.json())
+
+    def get_deposit_products(self, account_id: str) -> Union[UnitResponse[List[AccountDepositProductDTO]], UnitError]:
+        response = super().get(f"{self.resource}/{account_id}/deposit-products")
+        if super().is_20x(response.status_code):
+            data = response.json().get("data")
+            return UnitResponse[List[AccountDepositProductDTO]](DtoDecoder.decode(data), None)
+        else:
+            return UnitError.from_json_api(response.json())
+
+    def add_owners(self, request: AccountOwnersRequest) -> Union[UnitResponse[AccountDTO], UnitError]:
+        payload = request.to_json_api()
+        response = super().post(f"{self.resource}/{request.account_id}/relationships/customers", payload)
+        if super().is_20x(response.status_code):
+            data = response.json().get("data")
+            return UnitResponse[AccountDTO](DtoDecoder.decode(data), None)
+        else:
+            return UnitError.from_json_api(response.json())
+
+    def remove_owners(self, request: AccountOwnersRequest) -> Union[UnitResponse[AccountDTO], UnitError]:
+        payload = request.to_json_api()
+        response = super().delete(f"{self.resource}/{request.account_id}/relationships/customers", payload)
+        if super().is_20x(response.status_code):
+            data = response.json().get("data")
+            return UnitResponse[AccountDTO](DtoDecoder.decode(data), None)
+        else:
+            return UnitError.from_json_api(response.json())
+
 
