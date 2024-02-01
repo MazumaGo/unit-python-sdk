@@ -408,7 +408,7 @@ class Coordinates(UnitDTO):
 
 class Merchant(UnitDTO):
     def __init__(
-        self, name: str, type: int, category: Optional[str], location: Optional[str], _id: Optional[str],
+        self, name: str, type: int, category: Optional[str] = None, location: Optional[str] = None, _id: Optional[str] = None,
     ):
         self.name = name
         self.type = type

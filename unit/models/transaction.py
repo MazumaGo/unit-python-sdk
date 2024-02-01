@@ -132,12 +132,12 @@ class BookTransactionDTO(BaseTransactionDTO):
 class PurchaseTransactionDTO(BaseTransactionDTO):
     def __init__(self, id: str, created_at: datetime, direction: str, amount: int, balance: int,
                  summary: str, card_last_4_digits: str, merchant: Merchant, coordinates: Optional[Coordinates],
-                 recurring: bool, interchange: Optional[int], ecommerce: bool, card_present: bool,
-                 payment_method: Optional[str], digital_wallet: Optional[str], card_verification_data,
-                 card_network: Optional[str], tags: Optional[Dict[str, str]],
-                 relationships: Optional[Dict[str, Relationship]], gross_interchange: Optional[str],
-                 cash_withdrawal_amount: Optional[int], currency_conversion: Optional[CurrencyConversion],
-                 rich_merchant_data: Optional[RichMerchantData], last_4_digits: str = None):
+                 recurring: bool, ecommerce: bool, card_present: bool, card_verification_data,
+                 interchange: Optional[int] = None, payment_method: Optional[str] = None, digital_wallet: Optional[str] = None,
+                 card_network: Optional[str] = None, tags: Optional[Dict[str, str]] = None,
+                 relationships: Optional[Dict[str, Relationship]] = None, gross_interchange: Optional[str] = None,
+                 cash_withdrawal_amount: Optional[int] = None, currency_conversion: Optional[CurrencyConversion] = None,
+                 rich_merchant_data: Optional[RichMerchantData] = None, last_4_digits: str = None):
         BaseTransactionDTO.__init__(self, id, created_at, direction, amount, balance, summary, tags, relationships)
         self.type = 'purchaseTransaction'
         self.attributes["cardLast4Digits"] = card_last_4_digits
