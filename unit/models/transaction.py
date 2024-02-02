@@ -166,12 +166,15 @@ class PurchaseTransactionDTO(BaseTransactionDTO):
             _id, date_utils.to_datetime(attributes["createdAt"]), attributes["direction"],
             attributes["amount"], attributes["balance"], attributes.get("summary"), attributes.get("cardLast4Digits", None),
             Merchant.from_json_api(attributes.get("merchant")), Coordinates.from_json_api(attributes.get("coordinates")),
-            attributes["recurring"], attributes.get("interchange"), attributes.get("ecommerce"),
-            attributes.get("cardPresent"), attributes.get("paymentMethod"), attributes.get("digitalWallet"),
-            attributes.get("cardVerificationData"), attributes.get("cardNetwork"), attributes.get("tags"),
-            relationships, attributes.get("last4Digits", None), attributes.get("grossInterchange"), attributes.get("cashWithdrawalAmount"),
+            attributes["recurring"], attributes.get("ecommerce"),
+            attributes.get("cardPresent"),
+            attributes.get("cardVerificationData"),
+            attributes.get("interchange"),
+            attributes.get("paymentMethod"), attributes.get("digitalWallet"),
+            attributes.get("cardNetwork"), attributes.get("tags"),
+            relationships, attributes.get("grossInterchange"), attributes.get("cashWithdrawalAmount"),
             CurrencyConversion.from_json_api(attributes.get("currencyConversion")),
-            RichMerchantData.from_json_api(attributes.get("richMerchantData")))
+            RichMerchantData.from_json_api(attributes.get("richMerchantData")), attributes.get("last4Digits", None))
 
 
 class AtmTransactionDTO(BaseTransactionDTO):
