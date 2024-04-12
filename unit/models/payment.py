@@ -360,8 +360,34 @@ class CreatePushToCardPaymentRequest(CreatePaymentBaseRequest):
         super().__init__(amount, description, relationships, idempotency_key, tags, None, "pushToCardPayment", False, configuration)
 
 
+class CreateCheckPaymentRequest(UnitRequest):
+    def __init__(
+            self,
+            description: str,
+            amount: int,
+            counterparty: CheckPaymentCounterparty,
+            idempotency_key: str,
+            relationships: Dict[str, Relationship],
+            memo: Optional[str] = None,
+            send_date: Optional[str] = None,
+            tags: Optional[Dict[str, str]] = None,
+    ):
+        self.description = description
+        self.amount = amount
+        self.send_date = send_date
+        self.counterparty = counterparty
+        self.memo = memo
+        self.idempotency_key = idempotency_key
+        self.tags = tags
+        self.relationships = relationships
+
+    def to_json_api(self) -> Dict:
+        return super().to_payload("checkPayment", self.relationships)
+
+
 CreatePaymentRequest = Union[CreateInlinePaymentRequest, CreateLinkedPaymentRequest, CreateVerifiedPaymentRequest,
-                             CreateBookPaymentRequest, CreateWirePaymentRequest, CreatePushToCardPaymentRequest]
+                             CreateBookPaymentRequest, CreateWirePaymentRequest, CreatePushToCardPaymentRequest,
+                             CreateCheckPaymentRequest]
 
 class PatchAchPaymentRequest(object):
     def __init__(self, payment_id: str, tags: Dict[str, str]):
