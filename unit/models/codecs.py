@@ -429,4 +429,9 @@ class UnitEncoder(json.JSONEncoder):
                     "accountType": obj.account_type, "name": obj.name}
         if isinstance(obj, Coordinates):
             return {"longitude": obj.longitude, "latitude": obj.latitude}
+        if isinstance(obj, CheckPaymentCounterparty):
+            return {
+                "name": obj.name,
+                "address": obj.address
+            }
         return json.JSONEncoder.default(self, obj)
