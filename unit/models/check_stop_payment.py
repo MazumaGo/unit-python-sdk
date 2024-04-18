@@ -2,10 +2,10 @@ from unit.models import *
 from unit.utils import date_utils
 
 
-CheckStopPaymentStatus = Literal["Active", "Disabled"]
+StopPaymentStatus = Literal["Active", "Disabled"]
 
 class CheckStopPaymentDTO(object):
-    def __init__(self, id: str, created_at: datetime, updated_at: datetime, amount: int, status: CheckStopPaymentStatus,
+    def __init__(self, id: str, created_at: datetime, updated_at: datetime, amount: int, status: StopPaymentStatus,
                  check_number: str, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         self.id = id
         self.type = "checkStopPayment"
