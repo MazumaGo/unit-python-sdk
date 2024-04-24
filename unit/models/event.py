@@ -495,7 +495,7 @@ class CheckPaymentDeliveryStatusChangedEvent(BaseEvent):
         BaseEvent.__init__(self, id, created_at, tags, relationships)
         self.type = 'checkPayment.deliveryStatusChanged'
         self.attributes["previousDeliveryStatus"] = previous_delivery_status
-        self.attributes["NewDeliveryStatus"] = new_delivery_status
+        self.attributes["newDeliveryStatus"] = new_delivery_status
         self.attributes["trackedAt"] = tracked_at
         self.attributes["postalCode"] = postal_code
 
@@ -503,7 +503,7 @@ class CheckPaymentDeliveryStatusChangedEvent(BaseEvent):
     def from_json_api(_id, _type, attributes, relationships):
         return CheckPaymentDeliveryStatusChangedEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
                                                       attributes["previousDeliveryStatus"],
-                                                      attributes["NewDeliveryStatus"], attributes["trackedAt"],
+                                                      attributes["newDeliveryStatus"], attributes["trackedAt"],
                                                       attributes["postalCode"], attributes.get("tags"), relationships)
 
 
