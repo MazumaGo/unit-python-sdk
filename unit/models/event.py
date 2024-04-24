@@ -326,17 +326,17 @@ class CheckDepositReturnedEvent(BaseEvent):
 
 
 class CheckPaymentCreatedEvent(BaseEvent):
-    def __init__(self, id: str, created_at: datetime, status: str, additional_verification_status: str,
+    def __init__(self, id: str, created_at: datetime, status: str, additional_verification_required: str,
                  tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         BaseEvent.__init__(self, id, created_at, tags, relationships)
         self.type = 'checkPayment.created'
         self.attributes["status"] = status
-        self.attributes["additionalVerificationStatus"] = additional_verification_status
+        self.attributes["additionalVerificationRequired"] = additional_verification_required
 
     @staticmethod
     def from_json_api(_id, _type, attributes, relationships):
         return CheckPaymentCreatedEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
-                                        attributes["status"], attributes["additionalVerificationStatus"],
+                                        attributes["status"], attributes["additionalVerificationRequired"],
                                         attributes.get("tags"), relationships)
 
 
@@ -471,7 +471,7 @@ class CheckPaymentReturnToSenderEvent(BaseEvent):
 
     @staticmethod
     def from_json_api(_id, _type, attributes, relationships):
-        return CheckPaymentDeliveredEvent(_id, date_utils.to_datetime(attributes["createdAt"]), attributes["status"],
+        return CheckPaymentReturnToSenderEvent(_id, date_utils.to_datetime(attributes["createdAt"]), attributes["status"],
                                           attributes["previousStatus"], attributes.get("tags"), relationships)
 
 
