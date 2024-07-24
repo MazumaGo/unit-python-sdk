@@ -41,4 +41,3 @@ class BaseResource(object):
 
     def is_20x(self, status: int):
         return status == 200 or status == 201 or status == 204
-
