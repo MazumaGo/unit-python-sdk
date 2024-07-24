@@ -55,18 +55,24 @@ AllowedApplicationTypes = Union["Individual", "Business", "SoleProprietorship"]
 
 
 class CreateApplicationFormRequest(UnitRequest):
-    def __init__(self, tags: Optional[Dict[str, str]] = None,
-                 application_details: Optional[ApplicationFormPrefill] = None,
-                 allowed_application_types: [AllowedApplicationTypes] = None):
+    def __init__(
+        self,
+        relationships: [Dict[str, Relationship]],
+        tags: Optional[Dict[str, str]] = None,
+        application_details: Optional[ApplicationFormPrefill] = None,
+        allowed_application_types: [AllowedApplicationTypes] = None
+     ):
         self.tags = tags
         self.application_details = application_details
         self.allowed_application_types = allowed_application_types
+        self.relationships = relationships
 
     def to_json_api(self) -> Dict:
         payload = {
             "data": {
                 "type": "applicationForm",
-                "attributes": {}
+                "attributes": {},
+                "relationships": self.relationships,
             }
         }
 
