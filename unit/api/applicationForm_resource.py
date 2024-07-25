@@ -23,12 +23,12 @@ class ApplicationFormResource(BaseResource):
         else:
             return UnitError.from_json_api(response.json())
 
-    def get(self, application_form_id: str, include: Optional[str] = "") -> Union[UnitResponse[ApplicationFormDTO], UnitError]:
+    def get(self, application_form_id: str, include: Optional[str] = "") -> Union[UnitResponse[ApplicationFormV2DTO], UnitError]:
         response = super().get(f"{self.resource}/{application_form_id}", {"include": include})
         if super().is_20x(response.status_code):
             data = response.json().get("data")
             included = response.json().get("included")
-            return UnitResponse[ApplicationFormDTO](DtoDecoder.decode(data), DtoDecoder.decode(included))
+            return UnitResponse[ApplicationFormV2DTO](DtoDecoder.decode(data), DtoDecoder.decode(included))
         else:
             return UnitError.from_json_api(response.json())
 
