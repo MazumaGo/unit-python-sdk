@@ -1,20 +1,14 @@
-import json
-from unit.models import *
-from datetime import datetime, date
-
 from unit.models.batch_release import BatchReleaseDTO
 from unit.models.check_payment import CheckPaymentDTO
 from unit.models.reward import RewardDTO
-from unit.utils import date_utils
-from unit.models.applicationForm import ApplicationFormDTO
+from unit.models.applicationForm import ApplicationFormDTO, ApplicationFormV2DTO
 from unit.models.application import IndividualApplicationDTO, BusinessApplicationDTO, ApplicationDocumentDTO
 from unit.models.account import DepositAccountDTO, AccountLimitsDTO
 from unit.models.customer import IndividualCustomerDTO, BusinessCustomerDTO
 from unit.models.card import IndividualDebitCardDTO, BusinessDebitCardDTO, IndividualVirtualDebitCardDTO,\
     BusinessVirtualDebitCardDTO, PinStatusDTO, CardLimitsDTO
 from unit.models.transaction import *
-from unit.models.payment import AchPaymentDTO, BookPaymentDTO, WirePaymentDTO, AchReceivedPaymentDTO, BillPaymentDTO, \
-    SimulateIncomingAchPaymentDTO
+from unit.models.payment import AchPaymentDTO, BookPaymentDTO, WirePaymentDTO, AchReceivedPaymentDTO, BillPaymentDTO
 from unit.models.customerToken import CustomerTokenDTO, CustomerVerificationTokenDTO
 from unit.models.fee import FeeDTO
 from unit.models.event import *
@@ -214,6 +208,9 @@ mappings = {
         "applicationForm": lambda _id, _type, attributes, relationships:
         ApplicationFormDTO.from_json_api(_id, _type, attributes, relationships),
 
+        "applicationFormV2": lambda _id, _type, attributes, relationships, links:
+        ApplicationFormV2DTO.from_json_api(_id, attributes, relationships, links),
+
         "fee": lambda _id, _type, attributes, relationships:
         FeeDTO.from_json_api(_id, _type, attributes, relationships),
 
@@ -361,6 +358,10 @@ mappings = {
 def split_json_api_single_response(payload: Dict):
     _id, _type, attributes = payload.get("id"), payload["type"], payload["attributes"]
     relationships = None
+    links = None
+
+    if payload.get("links"):
+        links = payload.get("links")
 
     if payload.get("relationships"):
         relationships = dict()
@@ -371,7 +372,7 @@ def split_json_api_single_response(payload: Dict):
             else:
                 relationships[k] = Relationship(v["data"]["type"], v["data"]["id"])
 
-    return _id, _type, attributes, relationships
+    return _id, _type, attributes, relationships, links
 
 
 def split_json_api_array_response(payload):
@@ -391,8 +392,10 @@ def decode_limits(attributes: Dict):
     else:
         return CardLimitsDTO.from_json_api(attributes)
 
-def mapping_wraper(_id, _type, attributes, relationships):
+def mapping_wraper(_id, _type, attributes, relationships, links):
     if _type in mappings:
+        if links:
+            return mappings[_type](_id, _type, attributes, relationships, links)
         return mappings[_type](_id, _type, attributes, relationships)
     else:
         return RawUnitObject(_id, _type, attributes, relationships)
@@ -411,8 +414,8 @@ class DtoDecoder(object):
 
             return response
         else:
-            _id, _type, attributes, relationships = split_json_api_single_response(payload)
-            return mapping_wraper(_id, _type, attributes, relationships)
+            _id, _type, attributes, relationships, links = split_json_api_single_response(payload)
+            return mapping_wraper(_id, _type, attributes, relationships, links)
 
 class UnitEncoder(json.JSONEncoder):
     def default(self, obj):

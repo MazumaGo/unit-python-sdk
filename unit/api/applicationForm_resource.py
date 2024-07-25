@@ -8,27 +8,27 @@ class ApplicationFormResource(BaseResource):
         super().__init__(api_url, token)
         self.resource = "application-forms"
 
-    def create(self, request: CreateApplicationFormRequest) -> Union[UnitResponse[ApplicationFormDTO], UnitError]:
+    def create(self, request: CreateApplicationFormRequest) -> Union[UnitResponse[ApplicationFormV2DTO], UnitError]:
         payload = request.to_json_api()
         response = super().post(
             self.resource,
-            payload,
+            data=payload,
             headers={
                 "X-Accept-Version": "V2024_06"
             }
         )
         if super().is_20x(response.status_code):
             data = response.json().get("data")
-            return UnitResponse[ApplicationFormDTO](DtoDecoder.decode(data), None)
+            return UnitResponse[ApplicationFormV2DTO](DtoDecoder.decode(data), None)
         else:
             return UnitError.from_json_api(response.json())
 
-    def get(self, application_form_id: str, include: Optional[str] = "") -> Union[UnitResponse[ApplicationFormDTO], UnitError]:
+    def get(self, application_form_id: str, include: Optional[str] = "") -> Union[UnitResponse[ApplicationFormV2DTO], UnitError]:
         response = super().get(f"{self.resource}/{application_form_id}", {"include": include})
         if super().is_20x(response.status_code):
             data = response.json().get("data")
             included = response.json().get("included")
-            return UnitResponse[ApplicationFormDTO](DtoDecoder.decode(data), DtoDecoder.decode(included))
+            return UnitResponse[ApplicationFormV2DTO](DtoDecoder.decode(data), DtoDecoder.decode(included))
         else:
             return UnitError.from_json_api(response.json())
 

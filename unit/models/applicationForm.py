@@ -37,6 +37,58 @@ class ApplicationFormPrefill(object):
         self.phone = phone
 
 
+class ApplicationLink(object):
+    def __init__(
+        self,
+        type,
+        href,
+    ):
+        self.type = type
+        self.href = type
+
+
+class ApplicationFormV2DTO(object):
+    def __init__(
+        self,
+        id,
+        created_at: datetime,
+        updated_at: datetime,
+        tags: Optional[Dict[str, str]],
+        token: str,
+        expiration: datetime,
+        relationships: Optional[Dict[str, Relationship]],
+        url: str
+    ):
+        self.type = "applicationFormV2"
+        self.id = id
+        self.attributes = {
+            "created_at": created_at,
+            "updated_at": updated_at,
+            "tags": tags,
+            "token": token,
+            "expiration": expiration,
+        }
+        self.relationships = relationships
+        self.url = url
+
+    @staticmethod
+    def from_json_api(
+        _id,
+        attributes,
+        relationships,
+        links,
+    ):
+        return ApplicationFormV2DTO(
+            id=_id,
+            created_at=attributes["createdAt"],
+            updated_at=attributes["updatedAt"],
+            tags=attributes["tags"],
+            token=attributes["applicationFormToken"]["token"],
+            expiration=attributes["applicationFormToken"]["expiration"],
+            relationships=relationships,
+            url=links["related"]["href"],
+        )
+
 class ApplicationFormDTO(object):
     def __init__(self, id: str, url: str, stage: ApplicationFormStage, applicant_details: ApplicationFormPrefill,
                  tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
@@ -55,18 +107,28 @@ AllowedApplicationTypes = Union["Individual", "Business", "SoleProprietorship"]
 
 
 class CreateApplicationFormRequest(UnitRequest):
-    def __init__(self, tags: Optional[Dict[str, str]] = None,
-                 application_details: Optional[ApplicationFormPrefill] = None,
-                 allowed_application_types: [AllowedApplicationTypes] = None):
+    def __init__(
+        self,
+        relationships: [Dict[str, Relationship]],
+        idempotency_key: str = None,
+        tags: Optional[Dict[str, str]] = None,
+        application_details: Optional[ApplicationFormPrefill] = None,
+        allowed_application_types: [AllowedApplicationTypes] = None
+     ):
+        self.idempotency_key = idempotency_key
         self.tags = tags
         self.application_details = application_details
         self.allowed_application_types = allowed_application_types
+        self.relationships = relationships
 
     def to_json_api(self) -> Dict:
         payload = {
             "data": {
                 "type": "applicationForm",
-                "attributes": {}
+                "attributes": {
+                    "idempotencyKey": self.idempotency_key
+                },
+                "relationships": self.relationships,
             }
         }
 
