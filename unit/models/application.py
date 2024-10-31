@@ -261,6 +261,13 @@ class BusinessApplicationDTO(object):
             attributes.get("ip"),
             attributes.get("ein"),
             attributes.get("dba"),
+            attributes.get("website"),
+            attributes.get("year_of_incorporation"),
+            attributes.get("business_vertical"),
+            attributes.get("annual_revenue"),
+            attributes.get("number_of_employees"),
+            attributes.get("cash_flow"),
+            attributes.get("countries_of_operation"),
             attributes.get("tags"),
             relationships,
         )
@@ -441,13 +448,7 @@ class CreateBusinessApplicationRequest(UnitRequest):
                     "officer": self.officer,
                     "beneficialOwners": self.beneficial_owners,
                     "entityType": self.entity_type,
-                    "industry": self.industry,
-                    "annualRevenue": self.annual_revenue,
-                    "numberOfEmployees": self.number_of_employees,
-                    "cashFlow": self.cash_flow,
                     "yearOfIncorporation": self.year_of_incorporation,
-                    "countriesOfOperation": self.countries_of_operation,
-                    "stockSymbol": self.stock_symbol,
                     "businessVertical": self.business_vertical,
                 },
             }
@@ -464,6 +465,24 @@ class CreateBusinessApplicationRequest(UnitRequest):
 
         if self.website:
             payload["data"]["attributes"]["website"] = self.website
+
+        if self.industry:
+            payload["data"]["attributes"]["industry"] = self.industry
+
+        if self.annual_revenue:
+            payload["data"]["attributes"]["annualRevenue"] = self.annual_revenue
+
+        if self.number_of_employees:
+            payload["data"]["attributes"]["numberOfEmployees"] = self.number_of_employees
+
+        if self.cash_flow:
+            payload["data"]["attributes"]["cashFlow"] = self.cash_flow
+
+        if self.countries_of_operation:
+            payload["data"]["attributes"]["countriesOfOperation"] = self.countries_of_operation
+
+        if self.stock_symbol:
+            payload["data"]["attributes"]["stockSymbol"] = self.stock_symbol
 
         return payload
 
