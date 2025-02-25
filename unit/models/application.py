@@ -139,6 +139,7 @@ class IndividualApplicationDTO(object):
         ein: Optional[str],
         dba: Optional[str],
         sole_proprietorship: Optional[bool],
+        business_vertical: Optional[BusinessVertical],
         tags: Optional[Dict[str, str]],
         relationships: Optional[Dict[str, Relationship]],
     ):
@@ -158,6 +159,7 @@ class IndividualApplicationDTO(object):
             "ein": ein,
             "dba": dba,
             "soleProprietorship": sole_proprietorship,
+            "businessVertical": business_vertical,
             "tags": tags,
         }
         self.relationships = relationships
@@ -179,6 +181,7 @@ class IndividualApplicationDTO(object):
             attributes.get("ein"),
             attributes.get("dba"),
             attributes.get("soleProprietorship"),
+            attributes.get("businessVertical"),
             attributes.get("tags"),
             relationships,
         )
