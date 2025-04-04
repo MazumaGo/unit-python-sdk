@@ -1,6 +1,6 @@
 from unit.api.base_resource import BaseResource
 from unit.models.authorization_request import *
-from unit.models.check_payment import ApproveCheckPaymentRequest, CheckPaymentDTO
+from unit.models.check_payment import ApproveCheckPaymentRequest, CheckPaymentDTO, ReturnCheckPaymentRequest
 from unit.models.codecs import DtoDecoder
 from unit.models.payment import CreateCheckPaymentRequest
 
@@ -38,6 +38,15 @@ class CheckPaymentResource(BaseResource):
 
     def cancel(self, check_payment_id: str) -> Union[UnitResponse[CheckPaymentDTO], UnitError]:
         response = super().post(f"{self.resource}/{check_payment_id}/cancel")
+        if super().is_20x(response.status_code):
+            data = response.json().get("data")
+            return UnitResponse[CheckPaymentDTO](DtoDecoder.decode(data), None)
+        else:
+            return UnitError.from_json_api(response.json())
+
+    def return_check(self, request: ReturnCheckPaymentRequest) -> Union[UnitResponse[CheckPaymentDTO], UnitError]:
+        payload = request.to_json_api()
+        response = super().get(f"{self.resource}/{request.check_payment_id}/return", payload)
         if super().is_20x(response.status_code):
             data = response.json().get("data")
             return UnitResponse[CheckPaymentDTO](DtoDecoder.decode(data), None)
