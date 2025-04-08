@@ -46,7 +46,7 @@ class CheckPaymentResource(BaseResource):
 
     def return_check(self, request: ReturnCheckPaymentRequest) -> Union[UnitResponse[CheckPaymentDTO], UnitError]:
         payload = request.to_json_api()
-        response = super().get(f"{self.resource}/{request.check_payment_id}/return", payload)
+        response = super().post(f"{self.resource}/{request.check_payment_id}/return", payload)
         if super().is_20x(response.status_code):
             data = response.json().get("data")
             return UnitResponse[CheckPaymentDTO](DtoDecoder.decode(data), None)
