@@ -140,3 +140,23 @@ class ApproveCheckPaymentRequest(UnitRequest):
 
     def __repr__(self):
         json.dumps(self.to_json_api())
+
+
+class ReturnCheckPaymentRequest(UnitRequest):
+    def __init__(self, check_payment_id: str,  reason: CheckPaymentReturnStatusReason):
+        self.check_payment_id = check_payment_id
+        self.reason = reason
+
+    def to_json_api(self) -> Dict:
+        payload = {
+            "data": {
+                "type": "checkPaymentReturn",
+                "attributes": {
+                    "reason": self.reason,
+                }
+            }
+        }
+        return payload
+
+    def __repr__(self):
+        return json.dumps(self.to_json_api())
