@@ -748,6 +748,19 @@ class DisputeCreatedEvent(BaseEvent):
                                         attributes["description"], attributes["source"], attributes["status"],
                                         attributes.get("tags"), relationships)
 
+class DisputeStatusChangedEvent(BaseEvent):
+    def __init__(self, id: str, created_at: datetime, previous_status: str, new_status: str,
+                 tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
+        BaseEvent.__init__(self, id, created_at, tags, relationships)
+        self.attributes['previousStatus'] = previous_status
+        self.attributes['newStatus'] = new_status
+        self.type = 'dispute.statusChanged'
+
+    @staticmethod
+    def from_json_api(_id, _type, attributes, relationships):
+        return DisputeStatusChangedEvent(_id, date_utils.to_datetime(attributes["createdAt"]), attributes["previousStatus"],
+                                        attributes["newStatus"], attributes.get("tags"), relationships)
+
 
 EventDTO = Union[
     AccountClosedEvent, AccountFrozenEvent, ApplicationDeniedEvent, ApplicationAwaitingDocumentsEvent,
@@ -764,7 +777,8 @@ EventDTO = Union[
     CheckPaymentAdditionalVerificationApprovedEvent,
     CustomerCreatedEvent, PaymentClearingEvent, PaymentSentEvent, PaymentReturnedEvent,
     StatementsCreatedEvent, TransactionCreatedEvent, AccountReopenedEvent, RawUnitObject,
-    StopPaymentCreatedEvent, StopPaymentPaymentStoppedEvent, StopPaymentDisabledEvent, DisputeCreatedEvent,
+    StopPaymentCreatedEvent, StopPaymentPaymentStoppedEvent, StopPaymentDisabledEvent,
+    DisputeCreatedEvent, DisputeStatusChangedEvent,
 ]
 
 
