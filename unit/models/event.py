@@ -732,6 +732,35 @@ class StopPaymentDisabledEvent(BaseEvent):
         return StopPaymentDisabledEvent(_id, date_utils.to_datetime(attributes["createdAt"]), attributes["status"],
                                         attributes["previousStatus"], attributes.get("tags"), relationships)
 
+class DisputeCreatedEvent(BaseEvent):
+    def __init__(self, id: str, created_at: datetime, amount: int, description: str, source: str, status: str,
+                 tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
+        BaseEvent.__init__(self, id, created_at, tags, relationships)
+        self.attributes['amount'] = amount
+        self.attributes['description'] = description
+        self.attributes['source'] = source
+        self.attributes['status'] = status
+        self.type = 'dispute.created'
+
+    @staticmethod
+    def from_json_api(_id, _type, attributes, relationships):
+        return DisputeCreatedEvent(_id, date_utils.to_datetime(attributes["createdAt"]), attributes["amount"],
+                                        attributes["description"], attributes["source"], attributes["status"],
+                                        attributes.get("tags"), relationships)
+
+class DisputeStatusChangedEvent(BaseEvent):
+    def __init__(self, id: str, created_at: datetime, previous_status: str, new_status: str,
+                 tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
+        BaseEvent.__init__(self, id, created_at, tags, relationships)
+        self.attributes['previousStatus'] = previous_status
+        self.attributes['newStatus'] = new_status
+        self.type = 'dispute.statusChanged'
+
+    @staticmethod
+    def from_json_api(_id, _type, attributes, relationships):
+        return DisputeStatusChangedEvent(_id, date_utils.to_datetime(attributes["createdAt"]), attributes["previousStatus"],
+                                        attributes["newStatus"], attributes.get("tags"), relationships)
+
 
 EventDTO = Union[
     AccountClosedEvent, AccountFrozenEvent, ApplicationDeniedEvent, ApplicationAwaitingDocumentsEvent,
@@ -749,6 +778,7 @@ EventDTO = Union[
     CustomerCreatedEvent, PaymentClearingEvent, PaymentSentEvent, PaymentReturnedEvent,
     StatementsCreatedEvent, TransactionCreatedEvent, AccountReopenedEvent, RawUnitObject,
     StopPaymentCreatedEvent, StopPaymentPaymentStoppedEvent, StopPaymentDisabledEvent,
+    DisputeCreatedEvent, DisputeStatusChangedEvent,
 ]
 
 
