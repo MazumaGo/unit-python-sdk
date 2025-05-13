@@ -733,7 +733,7 @@ class StopPaymentDisabledEvent(BaseEvent):
                                         attributes["previousStatus"], attributes.get("tags"), relationships)
 
 class DisputeCreatedEvent(BaseEvent):
-    def __init__(self, id: str, created_at: datetime, amount: int, description: str, status: str, source: str,
+    def __init__(self, id: str, created_at: datetime, amount: int, description: str, source: str, status: str,
                  tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         BaseEvent.__init__(self, id, created_at, tags, relationships)
         self.attributes['amount'] = amount

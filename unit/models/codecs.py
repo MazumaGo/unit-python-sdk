@@ -358,6 +358,12 @@ mappings = {
         "batchRelease": lambda _id, _type, attributes, relationships:
         BatchReleaseDTO.from_json_api(_id, _type, attributes, relationships),
 
+        "dispute.created": lambda _id, _type, attributes, relationships:
+        DisputeCreatedEvent.from_json_api(_id, _type, attributes, relationships),
+
+        "dispute.statusChanged": lambda _id, _type, attributes, relationships:
+        DisputeStatusChangedEvent.from_json_api(_id, _type, attributes, relationships),
+
 }
 
 
