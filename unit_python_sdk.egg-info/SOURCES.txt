@@ -23,6 +23,7 @@ unit/api/check_stop_payment_resource.py
 unit/api/counterparty_resource.py
 unit/api/customerToken_resource.py
 unit/api/customer_resource.py
+unit/api/dispute_resource.py
 unit/api/event_resource.py
 unit/api/fee_resource.py
 unit/api/institution_resource.py
@@ -54,6 +55,7 @@ unit/models/codecs.py
 unit/models/counterparty.py
 unit/models/customer.py
 unit/models/customerToken.py
+unit/models/dispute.py
 unit/models/event.py
 unit/models/fee.py
 unit/models/institution.py
