@@ -9,7 +9,7 @@ class DisputeResource(BaseResource):
         super().__init__(api_url, token)
         self.resource = "disputes"
 
-    def get_by_id(self, dispute_id: str) -> Union[UnitResponse[DisputeDTO], UnitError]:
+    def get(self, dispute_id: str) -> Union[UnitResponse[DisputeDTO], UnitError]:
         response = super().get(f"{self.resource}/{dispute_id}")
         if super().is_20x(response.status_code):
             data = response.json().get("data")
