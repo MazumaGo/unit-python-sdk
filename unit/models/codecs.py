@@ -364,6 +364,12 @@ mappings = {
         "dispute.statusChanged": lambda _id, _type, attributes, relationships:
         DisputeStatusChangedEvent.from_json_api(_id, _type, attributes, relationships),
 
+        "accountLowBalanceClosureTransaction": lambda _id, _type, attributes, relationships:
+        AccountLowBalanceClosureTransactionDTO.from_json_api(_id, _type, attributes, relationships),
+
+        "negativeBalanceCoverageTransaction": lambda _id, _type, attributes, relationships:
+        NegativeBalanceCoverageTransactionDTO.from_json_api(_id, _type, attributes, relationships),
+
 }
 
 
