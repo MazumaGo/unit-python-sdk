@@ -254,7 +254,7 @@ class CheckDepositPendingReviewEvent(BaseEvent):
 
     @staticmethod
     def from_json_api(_id, _type, attributes, relationships):
-        return CheckDepositCreatedEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
+        return CheckDepositPendingReviewEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
                                       attributes["previousStatus"], attributes.get("tags"), relationships)
 
 
@@ -267,7 +267,7 @@ class CheckDepositPendingEvent(BaseEvent):
 
     @staticmethod
     def from_json_api(_id, _type, attributes, relationships):
-        return CheckDepositCreatedEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
+        return CheckDepositPendingEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
                                       attributes["previousStatus"], attributes.get("tags"), relationships)
 
 
