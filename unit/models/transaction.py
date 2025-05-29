@@ -439,40 +439,27 @@ class RepaidPaymentAdvanceTransactionDTO(BaseTransactionDTO):
                                                   attributes.get("tags"), relationships)
 
 class AccountLowBalanceClosureTransactionDTO(BaseTransactionDTO):
-    def __init__(self, id: str, created_at: datetime, receiver_counterparty: Dict[str, str], amount: int, direction: str,
+    def __init__(self, id: str, created_at: datetime, amount: int, direction: str,
                  balance: int, summary: str, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         BaseTransactionDTO.__init__(self, id, created_at, direction, amount, balance, summary, tags, relationships)
         self.type = 'accountLowBalanceClosureTransaction'
-        self.attributes["receiverCounterparty"] = receiver_counterparty
-        self.attributes["amount"] = amount
-        self.attributes["direction"] = direction
-        self.attributes["balance"] = balance
-        self.attributes["summary"] = summary
-        self.attributes["tags"] = tags
 
     @staticmethod
     def from_json_api(_id, _type, attributes, relationships):
         return AccountLowBalanceClosureTransactionDTO(
-            _id, date_utils.to_datetime(attributes["createdAt"]), attributes["receiverCounterparty"],
-            attributes["amount"], attributes["direction"], attributes["balance"], attributes["summary"],
-            attributes.get("tags"), relationships)
+            _id, date_utils.to_datetime(attributes["createdAt"]),
+            attributes["amount"], attributes["direction"], attributes["balance"], attributes["summary"], attributes.get("tags"), relationships)
 
 class NegativeBalanceCoverageTransactionDTO(BaseTransactionDTO):
     def __init__(self, id: str, created_at: datetime, amount: int, direction: str,
                  balance: int, summary: str, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         BaseTransactionDTO.__init__(self, id, created_at, direction, amount, balance, summary, tags, relationships)
         self.type = 'negativeBalanceCoverageTransaction'
-        self.attributes["amount"] = amount
-        self.attributes["direction"] = direction
-        self.attributes["balance"] = balance
-        self.attributes["summary"] = summary
-        self.attributes["tags"] = tags
 
     @staticmethod
     def from_json_api(_id, _type, attributes, relationships):
         return NegativeBalanceCoverageTransactionDTO(
-            _id, date_utils.to_datetime(attributes["createdAt"]), attributes["amount"], attributes["direction"],
-             attributes["balance"], attributes["summary"], attributes.get("tags"), relationships)
+            _id, date_utils.to_datetime(attributes["createdAt"]), attributes["amount"], attributes["direction"], attributes["balance"], attributes["summary"], attributes.get("tags"), relationships)
 
 TransactionDTO = Union[OriginatedAchTransactionDTO, ReceivedAchTransactionDTO, ReturnedAchTransactionDTO,
                        ReturnedReceivedAchTransactionDTO, DishonoredAchTransactionDTO, BookTransactionDTO,
