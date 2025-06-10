@@ -761,6 +761,48 @@ class DisputeStatusChangedEvent(BaseEvent):
         return DisputeStatusChangedEvent(_id, date_utils.to_datetime(attributes["createdAt"]), attributes["previousStatus"],
                                         attributes["newStatus"], attributes.get("tags"), relationships)
 
+class ReceivedPaymentMarkedForReturnEvent(BaseEvent):
+    def __init__(self, id: str, created_at: datetime,
+                 status: str,
+                 type: str,
+                 amount: int,
+                 completion_date: date,
+                 company_name: str,
+                 counterparty_routing_number: str,
+                 description: str,
+                 trace_number: str,
+                 sec_code: str,
+                 return_cutoff_time: datetime,
+                 can_be_reprocessed: str,
+                 addenda: str,
+                 tags: Optional[Dict[str, str]],
+                 relationships: Optional[Dict[str, Relationship]]):
+        BaseEvent.__init__(self, id, created_at, tags, relationships)
+        self.attributes["status"] = status
+        self.attributes["type"] = type
+        self.attributes["amount"] = amount
+        self.attributes["completionDate"] = completion_date
+        self.attributes["companyName"] = company_name
+        self.attributes["counterpartyRoutingNumber"] = counterparty_routing_number
+        self.attributes["description"] = description
+        self.attributes["traceNumber"] = trace_number
+        self.attributes["secCode"] = sec_code
+        self.attributes["returnCutoffTime"] = return_cutoff_time
+        self.attributes["canBeReprocessed"] = can_be_reprocessed
+        self.attributes["addenda"] = addenda
+
+        self.type = 'receivedPayment.markedForReturn'
+
+    @staticmethod
+    def from_json_api(_id, _type, attributes, relationships):
+        return ReceivedPaymentMarkedForReturnEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
+                                                  attributes["status"], attributes["type"], attributes["amount"],
+                                                  attributes["completionDate"], attributes["companyName"],
+                                                  attributes["counterpartyRoutingNumber"], attributes["description"],
+                                                  attributes["traceNumber"], attributes["secCode"],
+                                                  attributes["returnCutoffTime"], attributes["canBeReprocessed"],
+                                                  attributes["addenda"], attributes.get("tags"), relationships)
+
 
 EventDTO = Union[
     AccountClosedEvent, AccountFrozenEvent, ApplicationDeniedEvent, ApplicationAwaitingDocumentsEvent,
