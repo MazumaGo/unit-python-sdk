@@ -370,8 +370,8 @@ mappings = {
         "negativeBalanceCoverageTransaction": lambda _id, _type, attributes, relationships:
         NegativeBalanceCoverageTransactionDTO.from_json_api(_id, _type, attributes, relationships),
 
-        "receivedPayment.markedForReturn": lambda _id, _type, attributes, relationships:
-        ReceivedPaymentMarkedForReturnEvent.from_json_api(_id, _type, attributes, relationships),
+        "receivedPayment.created": lambda _id, _type, attributes, relationships:
+        ReceivedPaymentCreatedEvent.from_json_api(_id, _type, attributes, relationships),
 }
 
 

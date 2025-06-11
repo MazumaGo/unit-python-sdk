@@ -761,7 +761,7 @@ class DisputeStatusChangedEvent(BaseEvent):
         return DisputeStatusChangedEvent(_id, date_utils.to_datetime(attributes["createdAt"]), attributes["previousStatus"],
                                         attributes["newStatus"], attributes.get("tags"), relationships)
 
-class ReceivedPaymentMarkedForReturnEvent(BaseEvent):
+class ReceivedPaymentCreatedEvent(BaseEvent):
     def __init__(self, id: str, created_at: datetime,
                  status: str,
                  type: str,
@@ -791,11 +791,11 @@ class ReceivedPaymentMarkedForReturnEvent(BaseEvent):
         self.attributes["canBeReprocessed"] = can_be_reprocessed
         self.attributes["addenda"] = addenda
 
-        self.type = 'receivedPayment.markedForReturn'
+        self.type = 'receivedPayment.created'
 
     @staticmethod
     def from_json_api(_id, _type, attributes, relationships):
-        return ReceivedPaymentMarkedForReturnEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
+        return ReceivedPaymentCreatedEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
                                                   attributes["status"], attributes["type"], attributes["amount"],
                                                   attributes["completionDate"], attributes["companyName"],
                                                   attributes["counterpartyRoutingNumber"], attributes["description"],
@@ -820,7 +820,7 @@ EventDTO = Union[
     CustomerCreatedEvent, PaymentClearingEvent, PaymentSentEvent, PaymentReturnedEvent,
     StatementsCreatedEvent, TransactionCreatedEvent, AccountReopenedEvent, RawUnitObject,
     StopPaymentCreatedEvent, StopPaymentPaymentStoppedEvent, StopPaymentDisabledEvent,
-    DisputeCreatedEvent, DisputeStatusChangedEvent,
+    DisputeCreatedEvent, DisputeStatusChangedEvent, ReceivedPaymentCreatedEvent
 ]
 
 
