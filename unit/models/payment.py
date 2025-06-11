@@ -149,13 +149,15 @@ class AchReceivedPaymentDTO(object):
     def __init__(self, id: str, created_at: datetime, status: AchReceivedPaymentStatus, was_advanced: bool,
                  completion_date: datetime, return_reason: Optional[str], amount: int, description: str,
                  addenda: Optional[str], company_name: str, counterparty_routing_number: str, trace_number: str,
-                 sec_code: Optional[str], tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
+                 sec_code: Optional[str], return_cutoff_time: Optional[datetime], can_be_reprocessed: Optional[bool],
+                 tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         self.type = "achReceivedPayment"
         self.attributes = {"createdAt": created_at, "status": status, "wasAdvanced": was_advanced,
                            "completionDate": completion_date, "returnReason": return_reason, "description": description,
                            "amount": amount, "addenda": addenda, "companyName": company_name,
                            "counterpartyRoutingNumber": counterparty_routing_number, "traceNumber": trace_number,
-                           "secCode": sec_code, "tags": tags}
+                           "secCode": sec_code, "returnCutoffTime": return_cutoff_time, "canBeReprocessed": can_be_reprocessed,
+                           "tags": tags}
         self.relationships = relationships
 
     @staticmethod
@@ -165,7 +167,8 @@ class AchReceivedPaymentDTO(object):
                                      attributes.get("returnReason"),attributes["amount"], attributes["description"],
                                      attributes.get("addenda"), attributes.get("companyName"),
                                      attributes.get("counterpartyRoutingNumber"), attributes.get("traceNumber"),
-                                     attributes.get("secCode"), attributes.get("tags"), relationships)
+                                     attributes.get("secCode"), attributes.get("returnCutoffTime"), attributes.get("canBeReprocessed"),
+                                     attributes.get("tags"), relationships)
 
 class CreatePaymentBaseRequest(UnitRequest):
     def __init__(self, amount: int, description: str, relationships: Dict[str, Relationship],
