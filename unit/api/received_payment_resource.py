@@ -43,3 +43,11 @@ class ReceivedPaymentResource(BaseResource):
             return UnitResponse[AchReceivedPaymentDTO](DtoDecoder.decode(data), None)
         else:
             return UnitError.from_json_api(response.json())
+    
+    def reprocess(self, payment_id: str) -> Union[UnitResponse[AchReceivedPaymentDTO], UnitError]:
+        response = super().post(f"{self.resource}/{payment_id}/reprocess")
+        if response.status_code == 200:
+            data = response.json().get("data")
+            return UnitResponse[AchReceivedPaymentDTO](DtoDecoder.decode(data), None)
+        else:
+            return UnitError.from_json_api(response.json())
