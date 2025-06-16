@@ -772,9 +772,9 @@ class ReceivedPaymentCreatedEvent(BaseEvent):
                  description: str,
                  trace_number: str,
                  sec_code: str,
-                 return_cutoff_time: datetime,
-                 can_be_reprocessed: str,
-                 addenda: str,
+                 return_cutoff_time: Optional[datetime],
+                 can_be_reprocessed: Optional[bool],
+                 addenda: Optional[str],
                  tags: Optional[Dict[str, str]],
                  relationships: Optional[Dict[str, Relationship]]):
         BaseEvent.__init__(self, id, created_at, tags, relationships)
@@ -800,8 +800,8 @@ class ReceivedPaymentCreatedEvent(BaseEvent):
                                                   attributes["completionDate"], attributes["companyName"],
                                                   attributes["counterpartyRoutingNumber"], attributes["description"],
                                                   attributes["traceNumber"], attributes["secCode"],
-                                                  attributes["returnCutoffTime"], attributes["canBeReprocessed"],
-                                                  attributes["addenda"], attributes.get("tags"), relationships)
+                                                  attributes.get("returnCutoffTime"), attributes.get("canBeReprocessed"),
+                                                  attributes.get("addenda"), attributes.get("tags"), relationships)
 
 
 EventDTO = Union[
