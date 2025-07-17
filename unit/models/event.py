@@ -151,8 +151,8 @@ class AuthorizationRequestApprovedEvent(BaseEvent):
 
 
 class AuthorizationRequestDeclinedEvent(BaseEvent):
-    def __init__(self, id: str, created_at: datetime, amount: str, status: str, decline_reason: str,
-                 partial_approval_allowed: str, merchant: Dict[str, str], recurring: str,
+    def __init__(self, id: str, created_at: datetime, amount: str, status: Optional[str], decline_reason: str,
+                 partial_approval_allowed: str, merchant: Optional[Dict[str, str]], recurring: Optional[str],
                  tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         BaseEvent.__init__(self, id, created_at, tags, relationships)
         self.type = 'authorizationRequest.declined'
@@ -167,9 +167,9 @@ class AuthorizationRequestDeclinedEvent(BaseEvent):
     @staticmethod
     def from_json_api(_id, _type, attributes, relationships):
         return AuthorizationRequestDeclinedEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
-                                                 attributes["amount"], attributes["status"],
+                                                 attributes["amount"], attributes.get("status"),
                                                  attributes["declineReason"], attributes["partialApprovalAllowed"],
-                                                 attributes["merchant"], attributes["recurring"],
+                                                 attributes.get("merchant"), attributes.get("recurring"),
                                                  attributes.get("tags"), relationships)
 
 
