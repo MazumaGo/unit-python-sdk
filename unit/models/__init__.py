@@ -332,10 +332,11 @@ class BeneficialOwner(UnitDTO):
 
 
 class AuthorizedUser(UnitDTO):
-    def __init__(self, full_name: FullName, email: str, phone: Phone):
+    def __init__(self, full_name: FullName, email: str, phone: Phone, jwt_subject: Optional[str] = None):
         self.full_name = full_name
         self.email = email
         self.phone = phone
+        self.jwt_subject = jwt_subject
 
     @staticmethod
     def from_json_api(l: List) -> List:
@@ -343,7 +344,7 @@ class AuthorizedUser(UnitDTO):
         for data in l:
             authorized_users.append(
                 AuthorizedUser(
-                    data.get("fullName"), data.get("email"), data.get("phone")
+                    data.get("fullName"), data.get("email"), data.get("phone"), data.get("jwtSubject")
                 )
             )
         return authorized_users
