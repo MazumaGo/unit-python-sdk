@@ -459,7 +459,10 @@ class UnitEncoder(json.JSONEncoder):
         if isinstance(obj, BusinessContact):
             return {"fullName": obj.full_name, "email": obj.email, "phone": obj.phone}
         if isinstance(obj, AuthorizedUser):
-            return {"fullName": obj.full_name, "email": obj.email, "phone": obj.phone}
+            authorized_user = {"fullName": obj.full_name, "email": obj.email, "phone": obj.phone}
+            if obj.jwt_subject is not None:
+                authorized_user["jwtSubject"] = obj.jwt_subject
+            return authorized_user
         if isinstance(obj, Officer):
             officer = {"fullName": obj.full_name, "dateOfBirth": date_utils.to_date_str(obj.date_of_birth),
                        "address": obj.address, "phone": obj.phone, "email": obj.email}
