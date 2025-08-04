@@ -232,6 +232,96 @@ class CardStatusChangedEvent(BaseEvent):
                                       attributes["previousStatus"], attributes.get("tags"), relationships)
 
 
+class CardFraudCaseCreatedEvent(BaseEvent):
+    def __init__(self, id: str, created_at: datetime, status: str, decision: str, activity_type: str,
+                 expires_at: datetime, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
+        BaseEvent.__init__(self, id, created_at, tags, relationships)
+        self.type = 'card.fraudCase.created'
+        self.attributes["status"] = status
+        self.attributes["decision"] = decision
+        self.attributes["activityType"] = activity_type
+        self.attributes["expiresAt"] = expires_at
+
+    @staticmethod
+    def from_json_api(_id, _type, attributes, relationships):
+        return CardFraudCaseCreatedEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
+                                       attributes["status"], attributes["decision"], attributes["activityType"],
+                                       date_utils.to_datetime(attributes["expiresAt"]), attributes.get("tags"),
+                                       relationships)
+
+
+class CardFraudCaseActivatedEvent(BaseEvent):
+    def __init__(self, id: str, created_at: datetime, status: str, decision: str, activity_type: str,
+                 expires_at: datetime, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
+        BaseEvent.__init__(self, id, created_at, tags, relationships)
+        self.type = 'card.fraudCase.activated'
+        self.attributes["status"] = status
+        self.attributes["decision"] = decision
+        self.attributes["activityType"] = activity_type
+        self.attributes["expiresAt"] = expires_at
+
+    @staticmethod
+    def from_json_api(_id, _type, attributes, relationships):
+        return CardFraudCaseActivatedEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
+                                         attributes["status"], attributes["decision"], attributes["activityType"],
+                                         date_utils.to_datetime(attributes["expiresAt"]), attributes.get("tags"),
+                                         relationships)
+
+
+class CardFraudCaseExpiredEvent(BaseEvent):
+    def __init__(self, id: str, created_at: datetime, status: str, decision: str, activity_type: str,
+                 expires_at: datetime, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
+        BaseEvent.__init__(self, id, created_at, tags, relationships)
+        self.type = 'card.fraudCase.expired'
+        self.attributes["status"] = status
+        self.attributes["decision"] = decision
+        self.attributes["activityType"] = activity_type
+        self.attributes["expiresAt"] = expires_at
+
+    @staticmethod
+    def from_json_api(_id, _type, attributes, relationships):
+        return CardFraudCaseExpiredEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
+                                       attributes["status"], attributes["decision"], attributes["activityType"],
+                                       date_utils.to_datetime(attributes["expiresAt"]), attributes.get("tags"),
+                                       relationships)
+
+
+class CardFraudCaseFraudEvent(BaseEvent):
+    def __init__(self, id: str, created_at: datetime, status: str, decision: str, activity_type: str,
+                 expires_at: datetime, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
+        BaseEvent.__init__(self, id, created_at, tags, relationships)
+        self.type = 'card.fraudCase.fraud'
+        self.attributes["status"] = status
+        self.attributes["decision"] = decision
+        self.attributes["activityType"] = activity_type
+        self.attributes["expiresAt"] = expires_at
+
+    @staticmethod
+    def from_json_api(_id, _type, attributes, relationships):
+        return CardFraudCaseFraudEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
+                                     attributes["status"], attributes["decision"], attributes["activityType"],
+                                     date_utils.to_datetime(attributes["expiresAt"]), attributes.get("tags"),
+                                     relationships)
+
+
+class CardFraudCaseNoFraudEvent(BaseEvent):
+    def __init__(self, id: str, created_at: datetime, status: str, decision: str, activity_type: str,
+                 expires_at: datetime, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
+        BaseEvent.__init__(self, id, created_at, tags, relationships)
+        self.type = 'card.fraudCase.noFraud'
+        self.attributes["status"] = status
+        self.attributes["decision"] = decision
+        self.attributes["activityType"] = activity_type
+        self.attributes["expiresAt"] = expires_at
+
+    @staticmethod
+    def from_json_api(_id, _type, attributes, relationships):
+        return CardFraudCaseNoFraudEvent(_id, date_utils.to_datetime(attributes["createdAt"]),
+                                       attributes["status"], attributes["decision"], attributes["activityType"],
+                                       date_utils.to_datetime(attributes["expiresAt"]), attributes.get("tags"),
+                                       relationships)
+
+
 class CheckDepositCreatedEvent(BaseEvent):
     def __init__(self, id: str, created_at: datetime, status: str, tags: Optional[Dict[str, str]],
                  relationships: Optional[Dict[str, Relationship]]):
@@ -807,6 +897,8 @@ class ReceivedPaymentCreatedEvent(BaseEvent):
 EventDTO = Union[
     AccountClosedEvent, AccountFrozenEvent, ApplicationDeniedEvent, ApplicationAwaitingDocumentsEvent,
     ApplicationPendingReviewEvent, CardActivatedEvent, CardStatusChangedEvent,
+    CardFraudCaseCreatedEvent, CardFraudCaseActivatedEvent, CardFraudCaseExpiredEvent,
+    CardFraudCaseFraudEvent, CardFraudCaseNoFraudEvent,
     AuthorizationCreatedEvent, AuthorizationCanceledEvent, AuthorizationDeclinedEvent,
     AuthorizationRequestDeclinedEvent, AuthorizationRequestPendingEvent,
     AuthorizationRequestApprovedEvent, DocumentApprovedEvent, DocumentRejectedEvent,
