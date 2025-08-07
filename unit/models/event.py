@@ -236,7 +236,7 @@ class CardFraudCaseCreatedEvent(BaseEvent):
     def __init__(self, id: str, created_at: datetime, status: str, decision: str, activity_type: str,
                  expires_at: datetime, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         BaseEvent.__init__(self, id, created_at, tags, relationships)
-        self.type = 'card.fraudCase.created'
+        self.type = 'cardFraudCase.created'
         self.attributes["status"] = status
         self.attributes["decision"] = decision
         self.attributes["activityType"] = activity_type
@@ -254,7 +254,7 @@ class CardFraudCaseActivatedEvent(BaseEvent):
     def __init__(self, id: str, created_at: datetime, status: str, decision: str, activity_type: str,
                  expires_at: datetime, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         BaseEvent.__init__(self, id, created_at, tags, relationships)
-        self.type = 'card.fraudCase.activated'
+        self.type = 'cardFraudCase.activated'
         self.attributes["status"] = status
         self.attributes["decision"] = decision
         self.attributes["activityType"] = activity_type
@@ -272,7 +272,7 @@ class CardFraudCaseExpiredEvent(BaseEvent):
     def __init__(self, id: str, created_at: datetime, status: str, decision: str, activity_type: str,
                  expires_at: datetime, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         BaseEvent.__init__(self, id, created_at, tags, relationships)
-        self.type = 'card.fraudCase.expired'
+        self.type = 'cardFraudCase.expired'
         self.attributes["status"] = status
         self.attributes["decision"] = decision
         self.attributes["activityType"] = activity_type
@@ -290,7 +290,7 @@ class CardFraudCaseFraudEvent(BaseEvent):
     def __init__(self, id: str, created_at: datetime, status: str, decision: str, activity_type: str,
                  expires_at: datetime, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         BaseEvent.__init__(self, id, created_at, tags, relationships)
-        self.type = 'card.fraudCase.fraud'
+        self.type = 'cardFraudCase.fraud'
         self.attributes["status"] = status
         self.attributes["decision"] = decision
         self.attributes["activityType"] = activity_type
@@ -308,7 +308,7 @@ class CardFraudCaseNoFraudEvent(BaseEvent):
     def __init__(self, id: str, created_at: datetime, status: str, decision: str, activity_type: str,
                  expires_at: datetime, tags: Optional[Dict[str, str]], relationships: Optional[Dict[str, Relationship]]):
         BaseEvent.__init__(self, id, created_at, tags, relationships)
-        self.type = 'card.fraudCase.noFraud'
+        self.type = 'cardFraudCase.noFraud'
         self.attributes["status"] = status
         self.attributes["decision"] = decision
         self.attributes["activityType"] = activity_type
