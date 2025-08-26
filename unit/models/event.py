@@ -38,7 +38,17 @@ class AccountFrozenEvent(BaseEvent):
     def from_json_api(_id, _type, attributes, relationships):
         return AccountFrozenEvent(_id, date_utils.to_datetime(attributes["createdAt"]), attributes["freezeReason"],
                                   attributes.get("tags"), relationships)
+    
+class ApplicationApprovedEvent(BaseEvent):
+    def __init__(self, id: str, created_at: datetime, tags: Optional[Dict[str, str]],
+                 relationships: Optional[Dict[str, Relationship]]):
+        BaseEvent.__init__(self, id, created_at, tags, relationships)
+        self.type = 'application.approved'
 
+    @staticmethod
+    def from_json_api(_id, _type, attributes, relationships):
+        return ApplicationApprovedEvent(_id, date_utils.to_datetime(attributes["createdAt"]), attributes.get("tags"),
+                                      relationships)
 
 class ApplicationDeniedEvent(BaseEvent):
     def __init__(self, id: str, created_at: datetime, tags: Optional[Dict[str, str]],
@@ -895,7 +905,7 @@ class ReceivedPaymentCreatedEvent(BaseEvent):
 
 
 EventDTO = Union[
-    AccountClosedEvent, AccountFrozenEvent, ApplicationDeniedEvent, ApplicationAwaitingDocumentsEvent,
+    AccountClosedEvent, AccountFrozenEvent, ApplicationApprovedEvent, ApplicationDeniedEvent, ApplicationAwaitingDocumentsEvent,
     ApplicationPendingReviewEvent, CardActivatedEvent, CardStatusChangedEvent,
     CardFraudCaseCreatedEvent, CardFraudCaseActivatedEvent, CardFraudCaseExpiredEvent,
     CardFraudCaseFraudEvent, CardFraudCaseNoFraudEvent,

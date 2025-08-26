@@ -226,6 +226,9 @@ mappings = {
         "account.frozen": lambda _id, _type, attributes, relationships:
         AccountFrozenEvent.from_json_api(_id, _type, attributes, relationships),
 
+        "application.approved": lambda _id, _type, attributes, relationships:
+        ApplicationApprovedEvent.from_json_api(_id, _type, attributes, relationships),
+
         "application.awaitingDocuments": lambda _id, _type, attributes, relationships:
         ApplicationAwaitingDocumentsEvent.from_json_api(_id, _type, attributes, relationships),
 
