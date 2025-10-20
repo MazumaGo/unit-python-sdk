@@ -140,6 +140,7 @@ class IndividualApplicationDTO(object):
         dba: Optional[str],
         sole_proprietorship: Optional[bool],
         business_vertical: Optional[BusinessVertical],
+        operating_address: Optional[Address],
         tags: Optional[Dict[str, str]],
         relationships: Optional[Dict[str, Relationship]],
     ):
@@ -160,6 +161,7 @@ class IndividualApplicationDTO(object):
             "dba": dba,
             "soleProprietorship": sole_proprietorship,
             "businessVertical": business_vertical,
+            "operatingAddress": operating_address,
             "tags": tags,
         }
         self.relationships = relationships
@@ -182,6 +184,7 @@ class IndividualApplicationDTO(object):
             attributes.get("dba"),
             attributes.get("soleProprietorship"),
             attributes.get("businessVertical"),
+            attributes.get("operatingAddress"),
             attributes.get("tags"),
             relationships,
         )
@@ -213,6 +216,7 @@ class BusinessApplicationDTO(object):
         number_of_employees: Optional[NumberOfEmployees],
         cash_flow: Optional[CashFlow],
         countries_of_operation: Optional[List[str]],
+        operating_address: Optional[Address],
         tags: Optional[Dict[str, str]],
         relationships: Optional[Dict[str, Relationship]],
     ):
@@ -241,6 +245,7 @@ class BusinessApplicationDTO(object):
             "contact": contact,
             "officer": officer,
             "beneficialOwners": beneficial_owners,
+            "operatingAddress": operating_address,
             "tags": tags,
         }
         self.relationships = relationships
@@ -271,6 +276,7 @@ class BusinessApplicationDTO(object):
             attributes.get("number_of_employees"),
             attributes.get("cash_flow"),
             attributes.get("countries_of_operation"),
+            attributes.get("operating_address"),
             attributes.get("tags"),
             relationships,
         )
@@ -301,6 +307,7 @@ class CreateIndividualApplicationRequest(UnitRequest):
         annual_revenue: Optional[AnnualRevenue] = None,
         number_of_employees: Optional[NumberOfEmployees] = None,
         business_vertical: Optional[BusinessVertical] = None,
+        operating_address: Optional[Address] = None,
     ):
         self.full_name = full_name
         self.date_of_birth = date_of_birth
@@ -321,6 +328,7 @@ class CreateIndividualApplicationRequest(UnitRequest):
         self.number_of_employees = number_of_employees
         self.business_vertical = business_vertical
         self.website = website
+        self.operating_address = operating_address
 
     def to_json_api(self) -> Dict:
         payload = {
@@ -382,6 +390,9 @@ class CreateIndividualApplicationRequest(UnitRequest):
         if self.business_vertical:
             payload["data"]["attributes"]["businessVertical"] = self.business_vertical
 
+        if self.operating_address:
+            payload["data"]["attributes"]["operatingAddress"] = self.operating_address
+
         return payload
 
     def __repr__(self):
@@ -412,7 +423,8 @@ class CreateBusinessApplicationRequest(UnitRequest):
         countries_of_operation: Optional[List[str]] = None,
         stock_symbol: Optional[str] = None,
         business_vertical: Optional[BusinessVertical] = None,
-        device_fingerprints: Optional[List[DeviceFingerprint]] = None
+        device_fingerprints: Optional[List[DeviceFingerprint]] = None,
+        operating_address: Optional[Address] = None,
     ):
         self.name = name
         self.address = address
@@ -436,6 +448,7 @@ class CreateBusinessApplicationRequest(UnitRequest):
         self.stock_symbol = stock_symbol
         self.business_vertical = business_vertical
         self.device_fingerprints = device_fingerprints
+        self.operating_address = operating_address
 
     def to_json_api(self) -> dict:
         payload = {
@@ -486,6 +499,9 @@ class CreateBusinessApplicationRequest(UnitRequest):
 
         if self.stock_symbol:
             payload["data"]["attributes"]["stockSymbol"] = self.stock_symbol
+
+        if self.operating_address:
+            payload["data"]["attributes"]["operatingAddress"] = self.operating_address
 
         return payload
 
