@@ -140,7 +140,6 @@ class IndividualApplicationDTO(object):
         dba: Optional[str],
         sole_proprietorship: Optional[bool],
         business_vertical: Optional[BusinessVertical],
-        operating_address: Optional[Address],
         tags: Optional[Dict[str, str]],
         relationships: Optional[Dict[str, Relationship]],
     ):
@@ -161,7 +160,6 @@ class IndividualApplicationDTO(object):
             "dba": dba,
             "soleProprietorship": sole_proprietorship,
             "businessVertical": business_vertical,
-            "operatingAddress": operating_address,
             "tags": tags,
         }
         self.relationships = relationships
@@ -184,7 +182,6 @@ class IndividualApplicationDTO(object):
             attributes.get("dba"),
             attributes.get("soleProprietorship"),
             attributes.get("businessVertical"),
-            attributes.get("operatingAddress"),
             attributes.get("tags"),
             relationships,
         )
@@ -307,7 +304,6 @@ class CreateIndividualApplicationRequest(UnitRequest):
         annual_revenue: Optional[AnnualRevenue] = None,
         number_of_employees: Optional[NumberOfEmployees] = None,
         business_vertical: Optional[BusinessVertical] = None,
-        operating_address: Optional[Address] = None,
     ):
         self.full_name = full_name
         self.date_of_birth = date_of_birth
@@ -328,7 +324,6 @@ class CreateIndividualApplicationRequest(UnitRequest):
         self.number_of_employees = number_of_employees
         self.business_vertical = business_vertical
         self.website = website
-        self.operating_address = operating_address
 
     def to_json_api(self) -> Dict:
         payload = {
@@ -389,9 +384,6 @@ class CreateIndividualApplicationRequest(UnitRequest):
 
         if self.business_vertical:
             payload["data"]["attributes"]["businessVertical"] = self.business_vertical
-
-        if self.operating_address:
-            payload["data"]["attributes"]["operatingAddress"] = self.operating_address
 
         return payload
 
