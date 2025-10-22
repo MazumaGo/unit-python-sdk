@@ -913,7 +913,6 @@ EventDTO = Union[
     StatementsCreatedEvent, TransactionCreatedEvent, AccountReopenedEvent, RawUnitObject,
     StopPaymentCreatedEvent, StopPaymentPaymentStoppedEvent, StopPaymentDisabledEvent,
     DisputeCreatedEvent, DisputeStatusChangedEvent, ReceivedPaymentCreatedEvent
-
 ]
 
 
