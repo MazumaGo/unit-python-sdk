@@ -1,5 +1,5 @@
 from unit.api.base_resource import BaseResource
-from unit.models.application import *
+from unit.models import *
 from unit.models.check_registered_address import CheckRegisteredAddressRequest, CheckRegisteredAddressResponse
 from unit.models.codecs import DtoDecoder
 

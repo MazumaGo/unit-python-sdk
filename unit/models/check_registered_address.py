@@ -20,8 +20,10 @@ class CheckRegisteredAddressRequest(UnitDTO):
             "state": state,
             "postalCode": postal_code,
             "country": country,
-            "street2": street2,
         }
+
+        if street2:
+            self.attributes["street2"] = street2
 
     def to_json_api(self) -> Dict:
         payload = {
@@ -45,7 +47,7 @@ class CheckRegisteredAddressResponse(UnitDTO):
         }
 
     @staticmethod
-    def from_json_api(data: Dict):
-        return CheckRegisteredAddressRequest(
-            data.get("isRegisteredAgentAddress"),
+    def from_json_api(_id, _type, attributes, relationships):
+        return CheckRegisteredAddressResponse(
+            attributes.get("isRegisteredAgentAddress"),
         )

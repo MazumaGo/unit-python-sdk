@@ -28,6 +28,7 @@ from unit.api.account_end_of_day_resource import AccountEndOfDayResource
 from unit.api.reward_resource import RewardResource
 from unit.api.dispute_resource import DisputeResource
 from unit.api.received_payment_resource import ReceivedPaymentResource
+from unit.api.check_registered_address import CheckRegisteredAddressResource
 
 __all__ = ["api", "models", "utils"]
 
@@ -64,3 +65,4 @@ class Unit(object):
         self.check_stop_payments = CheckStopPaymentResource(api_url, token)
         self.disputes = DisputeResource(api_url, token)
         self.received_payments = ReceivedPaymentResource(api_url, token)
+        self.check_registered_address = CheckRegisteredAddressResource(api_url, token)
