@@ -15,15 +15,17 @@ class CheckRegisteredAddressRequest(UnitRequest):
         self.type = "checkRegisteredAgentAddress"
 
         self.attributes = {
-            "street": street,
-            "city": city,
-            "state": state,
-            "postalCode": postal_code,
-            "country": country,
+            "address": {
+                "street": street,
+                "city": city,
+                "state": state,
+                "postalCode": postal_code,
+                "country": country,
+            }
         }
 
         if street2:
-            self.attributes["street2"] = street2
+            self.attributes["address"]["street2"] = street2
 
     def to_json_api(self) -> Dict:
         payload = {
