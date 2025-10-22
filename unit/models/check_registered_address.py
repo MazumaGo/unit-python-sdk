@@ -2,7 +2,7 @@ from unit.models import *
 
 
 
-class CheckRegisteredAddressRequest(UnitDTO):
+class CheckRegisteredAddressRequest(UnitRequest):
     def __init__(
         self,
         street: str,
