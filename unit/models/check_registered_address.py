@@ -28,7 +28,7 @@ class CheckRegisteredAddressRequest(UnitDTO):
     def to_json_api(self) -> Dict:
         payload = {
             "data": {
-                "type": "individualApplication",
+                "type": self.type,
                 "attributes": self.attributes,
             }
         }
