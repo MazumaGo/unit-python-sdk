@@ -71,20 +71,6 @@ class ApplicationResource(BaseResource):
         else:
             return UnitError.from_json_api(response.json())
 
-    def check_registered_agent_address(self, request: Union[CreateIndividualApplicationRequest, CreateBusinessApplicationRequest]) -> Union[UnitResponse[ApplicationDTO], UnitError]:
-        payload = request.to_json_api()
-        response = super().post(f"{self.resource}/check-registered-agent-address", payload)
-
-        if response.ok:
-            data = response.json().get("data")
-            included = response.json().get("included")
-            if data["type"] == "individualApplication":
-                return UnitResponse[IndividualApplicationDTO](DtoDecoder.decode(data), DtoDecoder.decode(included))
-            else:
-                return UnitResponse[BusinessApplicationDTO](DtoDecoder.decode(data), DtoDecoder.decode(included))
-        else:
-            return UnitError.from_json_api(response.json())
-
     def approve_sb(self, request: ApproveApplicationSBRequest):
         url = f"sandbox/{self.resource}/{request.application_id}/approve"
 
