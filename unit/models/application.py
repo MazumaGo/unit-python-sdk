@@ -417,6 +417,7 @@ class CreateBusinessApplicationRequest(UnitRequest):
         business_vertical: Optional[BusinessVertical] = None,
         device_fingerprints: Optional[List[DeviceFingerprint]] = None,
         operating_address: Optional[Address] = None,
+        idempotency_key: Optional[str] = None,
     ):
         self.name = name
         self.address = address
@@ -441,6 +442,7 @@ class CreateBusinessApplicationRequest(UnitRequest):
         self.business_vertical = business_vertical
         self.device_fingerprints = device_fingerprints
         self.operating_address = operating_address
+        self.idempotency_key = idempotency_key
 
     def to_json_api(self) -> dict:
         payload = {
@@ -494,6 +496,9 @@ class CreateBusinessApplicationRequest(UnitRequest):
 
         if self.operating_address:
             payload["data"]["attributes"]["operatingAddress"] = self.operating_address
+        
+        if self.idempotency_key:
+            payload["data"]["attributes"]["idempotencyKey"] = self.idempotency_key
 
         return payload
 
