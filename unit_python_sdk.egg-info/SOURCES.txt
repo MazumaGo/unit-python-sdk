@@ -19,7 +19,6 @@ unit/api/bill_pay_resource.py
 unit/api/card_resource.py
 unit/api/check_deposit_resource.py
 unit/api/check_payment_resource.py
-unit/api/check_registered_address.py
 unit/api/check_stop_payment_resource.py
 unit/api/counterparty_resource.py
 unit/api/customerToken_resource.py
@@ -51,7 +50,6 @@ unit/models/bill_pay.py
 unit/models/card.py
 unit/models/check_deposit.py
 unit/models/check_payment.py
-unit/models/check_registered_address.py
 unit/models/check_stop_payment.py
 unit/models/codecs.py
 unit/models/counterparty.py
