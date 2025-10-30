@@ -444,7 +444,10 @@ class Merchant(UnitDTO):
         self.id = _id
 
     @staticmethod
-    def from_json_api(data: Dict):
+    def from_json_api(data: Dict = None):
+        if data is None:
+            return None
+
         return Merchant(
             data["name"], data["type"], data.get("category"), data.get("location"), data.get("id")
         )
