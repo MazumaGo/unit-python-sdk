@@ -131,7 +131,7 @@ class BookTransactionDTO(BaseTransactionDTO):
 
 class PurchaseTransactionDTO(BaseTransactionDTO):
     def __init__(self, id: str, created_at: datetime, direction: str, amount: int, balance: int,
-                 summary: str, card_last_4_digits: str, merchant: Merchant, coordinates: Optional[Coordinates],
+                 summary: str, card_last_4_digits: str, merchant: Optional[Merchant], coordinates: Optional[Coordinates],
                  recurring: bool, ecommerce: bool, card_present: bool, card_verification_data,
                  interchange: Optional[int] = None, payment_method: Optional[str] = None,
                  digital_wallet: Optional[str] = None, card_network: Optional[str] = None,
@@ -142,7 +142,8 @@ class PurchaseTransactionDTO(BaseTransactionDTO):
         BaseTransactionDTO.__init__(self, id, created_at, direction, amount, balance, summary, tags, relationships)
         self.type = 'purchaseTransaction'
         self.attributes["cardLast4Digits"] = card_last_4_digits
-        self.attributes["merchant"] = merchant
+        if merchant:
+            self.attributes["merchant"] = merchant
         self.attributes["coordinates"] = coordinates
         self.attributes["recurring"] = recurring
         self.attributes["interchange"] = interchange
@@ -219,14 +220,15 @@ class FeeTransactionDTO(BaseTransactionDTO):
 
 class CardTransactionDTO(BaseTransactionDTO):
     def __init__(self, id: str, created_at: datetime, direction: str, amount: int, balance: int,
-                 summary: str, card_last_4_digits: str, merchant: Merchant, recurring: Optional[bool],
+                 summary: str, card_last_4_digits: str, merchant: Optional[Merchant], recurring: Optional[bool],
                  interchange: Optional[int], payment_method: Optional[str], digital_wallet: Optional[str],
                  card_verification_data: Optional[Dict], card_network: Optional[str], tags: Optional[Dict[str, str]],
                  relationships: Optional[Dict[str, Relationship]]):
         BaseTransactionDTO.__init__(self, id, created_at, direction, amount, balance, summary, tags, relationships)
         self.type = 'cardTransaction'
         self.attributes["cardLast4Digits"] = card_last_4_digits
-        self.attributes["merchant"] = merchant
+        if merchant:
+            self.attributes["merchant"] = merchant
         self.attributes["recurring"] = recurring
         self.attributes["interchange"] = interchange
         self.attributes["paymentMethod"] = payment_method
@@ -239,7 +241,7 @@ class CardTransactionDTO(BaseTransactionDTO):
     def from_json_api(_id, _type, attributes, relationships):
         return CardTransactionDTO(_id, date_utils.to_datetime(attributes["createdAt"]), attributes["direction"],
                                   attributes["amount"], attributes["balance"], attributes["summary"],
-                                  attributes["cardLast4Digits"], Merchant.from_json_api(attributes["merchant"]),
+                                  attributes["cardLast4Digits"], Merchant.from_json_api(attributes.get("merchant")),
                                   attributes.get("recurring"), attributes.get("interchange"),
                                   attributes.get("paymentMethod"), attributes.get("digitalWallet"),
                                   attributes.get("cardVerificationData"), attributes.get("cardNetwork"),
