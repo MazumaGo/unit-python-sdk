@@ -372,6 +372,9 @@ mappings = {
 
         "receivedPayment.created": lambda _id, _type, attributes, relationships:
         ReceivedPaymentCreatedEvent.from_json_api(_id, _type, attributes, relationships),
+
+        "writeOffTransaction": lambda _id, _type, attributes, relationships:
+        WriteOffTransactionDTO.from_json_api(_id, _type, attributes, relationships),
 }
 
 
