@@ -482,7 +482,8 @@ TransactionDTO = Union[OriginatedAchTransactionDTO, ReceivedAchTransactionDTO, R
                        InterestTransactionDTO, DisputeTransactionDTO, CheckDepositTransactionDTO,
                        ReturnedCheckDepositTransactionDTO, CheckPaymentTransactionDTO,
                        ReturnedCheckPaymentTransactionDTO, PaymentAdvanceTransactionDTO,
-                       RepaidPaymentAdvanceTransactionDTO, AccountLowBalanceClosureTransactionDTO, NegativeBalanceCoverageTransactionDTO]
+                       RepaidPaymentAdvanceTransactionDTO, AccountLowBalanceClosureTransactionDTO, NegativeBalanceCoverageTransactionDTO,
+                       WriteOffTransactionDTO]
 
 
 class PatchTransactionRequest(BaseTransactionDTO, UnitRequest):
